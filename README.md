@@ -17,7 +17,7 @@ This is the primary HTML-based viewer for visualizing GeoJSON route data stored 
 
 Update the line below in `googlemaps.html`:
 ```html
-<script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY_HERE"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA4bVqER9jyPDHRJ4NMCsbFMFQtWDzcSQk"></script>
 ```
 
 Replace `YOUR_GOOGLE_MAPS_API_KEY_HERE` with your valid key.
