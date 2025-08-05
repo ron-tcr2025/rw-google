@@ -1,0 +1,18 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Sample Road Segment"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-71.552, 42.200],
+          [-71.553, 42.201]
+        ]
+      }
+    }
+  ]
+}

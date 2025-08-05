@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>RouteWISELY Viewer (Google Maps)</title>
+    <style>
+      #map {
+        height: 100vh;
+        width: 100%;
+      }
+      html, body {
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_API_KEY_HERE"></script>
+  </head>
+  <body>
+    <div id="map"></div>
+    <script>
+      let map, routeData, visited = [];
+
+      function initMap() {
+        map = new google.maps.Map(document.getElementById("map"), {
+          zoom: 11,
+          center: { lat: 39.05, lng: -84.6 },
+          mapTypeId: "roadmap"
+        });
+
+        fetch("https://storage.googleapis.com/rw-geojson-files/boone.geojson")
+          .then(response => response.json())
+          .then(data => {
+            routeData = data;
+            map.data.addGeoJson(routeData);
+            map.data.setStyle({
+              strokeColor: "#FF0000",
+              strokeWeight: 2
+            });
+          })
+          .catch(err => console.error("GeoJSON load error:", err));
+      }
+
+      let watchId;
+      function startTracking() {
+        if (!navigator.geolocation) {
+          alert("Geolocation not supported.");
+          return;
+        }
+
+        watchId = navigator.geolocation.watchPosition(position => {
+          const { latitude, longitude } = position.coords;
+          const marker = new google.maps.Marker({
+            position: { lat: latitude, lng: longitude },
+            map: map,
+            icon: {
+              path: google.maps.SymbolPath.FORWARD_CLOSED_ARROW,
+              scale: 5,
+              fillColor: "green",
+              fillOpacity: 0.9,
+              strokeWeight: 2,
+              rotation: position.coords.heading || 0
+            }
+          });
+          visited.push({ lat: latitude, lng: longitude, timestamp: new Date().toISOString() });
+          console.log("Visited:", visited);
+        }, console.error, {
+          enableHighAccuracy: true,
+          maximumAge: 0,
+          timeout: 10000
+        });
+      }
+
+      function stopTracking() {
+        if (watchId) {
+          navigator.geolocation.clearWatch(watchId);
+          console.log("Tracking stopped.");
+        }
+      }
+
+      function pauseTracking() {
+        stopTracking();
+        console.log("Tracking paused.");
+      }
+
+      window.onload = initMap;
+    </script>
+    <div style="position: fixed; top: 10px; left: 10px; z-index: 1000;">
+      <button onclick="startTracking()">Start</button>
+      <button onclick="pauseTracking()">Pause</button>
+      <button onclick="stopTracking()">Stop</button>
+    </div>
+  </body>
+</html>
